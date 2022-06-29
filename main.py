@@ -1,7 +1,7 @@
 import os
 from func import emojis
 
-from nextcord.ext import commands
+from nextcord.ext import commands , tasks
 from nextcord import *
 
 from nextcord.abc import GuildChannel
@@ -22,8 +22,13 @@ voteCount2 = 0
 voteCount3 = 0
 voteCount4 = 0
 
+@tasks.loop(seconds = 30)
+async def loop():
+    await client.change_presence(activity = Game(name = f"{len(client.guilds)}개의 서버에서 인증 하는중"))
+
 @client.event
 async def on_ready():
+    loop.start()
     print("ready")
 
 @client.event
@@ -45,8 +50,8 @@ async def on_message(message : Message):
 
 def random_color():return random.randint(0 , 0xffffff)
 
-@client.slash_command(description = "테스트")
-async def 테스트(inter : Interaction):
+@client.slash_command(description = "인증을 만듭니다")
+async def 인증만들기(inter : Interaction):
     await inter.response.send_message("ㅁㄴㅇㄹ" , view = button())
 
 @client.event
@@ -96,9 +101,9 @@ class verifyModal(ui.Modal):
             try:await inter.user.add_roles(utils.get(self.inter.guild.roles , id = self.role))
             except:return await inter.response.send_message("알수없는 오류가있어요... DM으로 문의해주세요!" , ephemeral = True)
 
-            await inter.response.send_message("성공" , ephemeral = True)
+            await inter.response.send_message(embed = Embed(title = "인증 성공!" , description = "인증에 성공하셨어요!" , color = 0x00b9ff) , ephemeral = True)
         else:
-            await inter.response.send_message("실패" , ephemeral = True)
+            await inter.response.send_message(embed = Embed(title = "인증 실패!" , description = "인증에 실패하셨어요... 혹시 로봇은 아니죠...?" , color = 0xff8d00) , ephemeral = True)
 
 class verifyMake(ui.Modal):
     def __init__(self , inter : Interaction):
@@ -179,6 +184,6 @@ class inquiry(ui.View):
     async def no(self , button : Button , inter : Integration):
         await inter.message.delete()
         del self
-
+        
 token = os.environ['TOKEN']
 client.run(token)
