@@ -64,7 +64,6 @@ async def on_interaction(inter : Interaction):
     elif inter.type == InteractionType.component:
         try:await inter.response.send_modal(verifyModal(length = int(inter.data["custom_id"].split("|")[1]) , role = int(inter.data["custom_id"].split("|")[0]) , inter = inter))
         except:pass
-    print(inter.data)
 
 
 class button(ui.View):
@@ -123,7 +122,6 @@ class verifyMake(ui.Modal):
 
     async def callback(self, inter : Interaction):
         await inter.response.send_message("만들기 성공!" , ephemeral = True)
-        print(self.ButtonName.value);print(self.Role.values);print(self.Length.value)
         await inter.channel.send(embed = Embed(title = self.EmbedTitle.value , description = self.EmbedDescription.value.replace("{role}" , f"<@&{self.Role.values[0]}>")) , view = button(name = self.ButtonName.value , role = self.Role.values[0] , length = self.Length.value))
 
 class verifySelect(ui.Select):
@@ -139,9 +137,7 @@ class verifySelect(ui.Select):
         roles = roles[1:]
         roles.reverse()
         for role in roles[1:]:
-            print(ok)
             if ok:
-                print(role)
                 if not role.is_bot_managed():options.append(SelectOption(label = role.name , value = str(role.id)))
             if clientRole == role:ok = True
         
