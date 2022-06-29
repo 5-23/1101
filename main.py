@@ -1,3 +1,4 @@
+import os
 from func import emojis
 
 from nextcord.ext import commands
@@ -179,4 +180,5 @@ class inquiry(ui.View):
         await inter.message.delete()
         del self
 
-client.run("ODc4NDk0NTI0MzcxMDA5NTQ2.GyjtV5.8_gE-HwP1bUJ8l_KufvX1sIMZio2or24e0UpGM")
+token = os.environ['TOKEN']
+client.run(token)
