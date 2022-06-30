@@ -7,7 +7,6 @@ from nextcord import *
 from nextcord.abc import GuildChannel
 
 import random
-# INTENTS = Intents.all()
 
 INTENTS = Intents.default()
 
@@ -16,11 +15,6 @@ INTENTS.guilds   = True
 INTENTS.members  = True
 
 client = commands.Bot(command_prefix = "asdf" , intents = INTENTS)
-
-voteCount  = 0
-voteCount2 = 0
-voteCount3 = 0
-voteCount4 = 0
 
 @tasks.loop(seconds = 30)
 async def loop():
@@ -57,9 +51,15 @@ async def 인증만들기(inter : Interaction):
 @client.event
 async def on_interaction(inter : Interaction):
     if inter.type == InteractionType.application_command:
-        if inter.user.guild_permissions.administrator:return await inter.response.send_modal(verifyMake(inter = inter))
-        if utils.get(inter.guild.members , id = client.user.id).guild_permissions.administrator:return await inter.response.send_message(embed = Embed(title = "오류" , description = "봇이 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
-        await inter.response.send_message(embed = Embed(title = "오류" , description = "당신은 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+        try:
+            if inter.channel.type.private:
+                return await inter.response.send_message(embed = Embed(title = "오류" , description = "DM에서는 사용하실수 없어요!" , color = 0xff0000) , ephemeral = True)
+
+            if inter.user.guild_permissions.administrator:return await inter.response.send_modal(verifyMake(inter = inter))
+            if utils.get(inter.guild.members , id = client.user.id).guild_permissions.administrator:return await inter.response.send_message(embed = Embed(title = "오류" , description = "봇이 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+            await inter.response.send_message(embed = Embed(title = "오류" , description = "당신은 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+        except:
+            pass
 
     elif inter.type == InteractionType.component:
         try:await inter.response.send_modal(verifyModal(length = int(inter.data["custom_id"].split("|")[1]) , role = int(inter.data["custom_id"].split("|")[0]) , inter = inter))
@@ -171,7 +171,7 @@ class inquiry(ui.View):
                 embed.set_image(url = str(inter.message.embeds[0].url))
         except:
             pass
-        await client.get_channel(957508032038834186).send(embed=embed)
+        await client.get_channel(957508032038834186).send(inter.user.id , embed=embed)
         self.clear_items()
         self.add_item(ui.Button(label = "공식서버", style = ButtonStyle.link , url = "https://discord.com/invite/w2Fw7UeZmY"))
         await inter.message.edit(embed = Embed(title = "문의가 완료되었습니다. 감사합니다!" , description=inter.message.embeds[0].description , color = inter.message.embeds[0].color) , view = self)
