@@ -24,7 +24,7 @@ voteCount4 = 0
 
 @tasks.loop(seconds = 30)
 async def loop():
-    await client.change_presence(activity = Game(name = f"{len(client.guilds)}개의 서버에서 인증 하는중"))
+    await client.change_presence(activity = Game(name = f"{len(client.guilds)}개의 서버에서 인증"))
 
 @client.event
 async def on_ready():
