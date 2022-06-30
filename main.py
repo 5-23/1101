@@ -120,6 +120,12 @@ class verifyMake(ui.Modal):
         self.add_item(self.Length)
 
     async def callback(self, inter : Interaction):
+        try:a = int(self.Length.value)
+        except:return await inter.response.send_message(embed = Embed(title = "오류" , description = "인증코드의 길이가 숫자가 아닙니다" , color = 0xff0000) , ephemeral = True)
+        
+        if a < 1:return await inter.response.send_message(embed = Embed(title = "오류" , description = "인증코드의 최소길이는 1입니다" , color = 0xff0000) , ephemeral = True)
+
+
         await inter.response.send_message("만들기 성공!" , ephemeral = True)
         await inter.channel.send(embed = Embed(title = self.EmbedTitle.value , description = self.EmbedDescription.value.replace("{role}" , f"<@&{self.Role.values[0]}>")) , view = button(name = self.ButtonName.value , role = self.Role.values[0] , length = self.Length.value))
 
@@ -179,6 +185,7 @@ class inquiry(ui.View):
     async def no(self , button : Button , inter : Integration):
         await inter.message.delete()
         del self
+
         
 token = os.environ['TOKEN']
 client.run(token)
