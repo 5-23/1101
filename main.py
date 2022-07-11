@@ -46,12 +46,10 @@ def random_color():return random.randint(0 , 0xffffff)
 
 @client.slash_command(description = "인증을 만듭니다")
 async def 인증만들기(inter : Interaction):
-    try:await inter.response.send_modal(verifyModal(length = int(inter.data["custom_id"].split("|")[1]) , role = int(inter.data["custom_id"].split("|")[0]) , inter = inter))
-    except Exception as e:print(e)
+    pass
 
 @client.event
 async def on_interaction(inter : Interaction):
-    await inter.response.defer()
     if inter.type == InteractionType.application_command:
         try:
             if str(inter.channel.type) == "private":return await inter.followup.send(embed = Embed(title = "오류" , description = "DM에서는 사용하실수 없어요!" , color = 0xff0000) , ephemeral = True)
