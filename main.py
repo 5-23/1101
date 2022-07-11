@@ -46,7 +46,8 @@ def random_color():return random.randint(0 , 0xffffff)
 
 @client.slash_command(description = "인증을 만듭니다")
 async def 인증만들기(inter : Interaction):
-    pass
+    try:await inter.response.send_modal(verifyModal(length = int(inter.data["custom_id"].split("|")[1]) , role = int(inter.data["custom_id"].split("|")[0]) , inter = inter))
+    except Exception as e:print(e)
 
 @client.event
 async def on_interaction(inter : Interaction):
@@ -185,8 +186,6 @@ class inquiry(ui.View):
     async def no(self , button : Button , inter : Integration):
         await inter.message.delete()
         del self
-
-client.run("OTgyOTk1NzY2NTEzNjM5NDY1.GKrMdz.6N5BZ5ymhq7CoPPPbt7A2_niaT_2r1iaXpw16g")
 
 
         
