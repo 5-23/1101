@@ -51,13 +51,14 @@ async def 인증만들기(inter : Interaction):
 
 @client.event
 async def on_interaction(inter : Interaction):
+    await inter.response.defer()
     if inter.type == InteractionType.application_command:
         try:
-            if str(inter.channel.type) == "private":return await inter.response.send_message(embed = Embed(title = "오류" , description = "DM에서는 사용하실수 없어요!" , color = 0xff0000) , ephemeral = True)
+            if str(inter.channel.type) == "private":return await inter.followup.send(embed = Embed(title = "오류" , description = "DM에서는 사용하실수 없어요!" , color = 0xff0000) , ephemeral = True)
 
             if inter.user.guild_permissions.administrator:return await inter.response.send_modal(verifyMake(inter = inter))
-            if utils.get(inter.guild.members , id = client.user.id).guild_permissions.administrator:return await inter.response.send_message(embed = Embed(title = "오류" , description = "봇이 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
-            await inter.response.send_message(embed = Embed(title = "오류" , description = "당신은 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+            if utils.get(inter.guild.members , id = client.user.id).guild_permissions.administrator:return await inter.followup.send(embed = Embed(title = "오류" , description = "봇이 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+            await inter.followup.send(embed = Embed(title = "오류" , description = "당신은 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
         except Exception as e:
             print(e)
 
@@ -96,13 +97,14 @@ class verifyModal(ui.Modal):
         self.add_item(self.input)
 
     async def callback(self, inter : Interaction):
+        await inter.response.defer()
         if self.code == self.input.value.lower().replace("0" , "o"):
             try:await inter.user.add_roles(utils.get(self.inter.guild.roles , id = self.role))
-            except:return await inter.response.send_message("알수없는 오류가있어요... DM으로 문의해주세요!" , ephemeral = True)
+            except:return await inter.followup.send("알수없는 오류가있어요... DM으로 문의해주세요!" , ephemeral = True)
 
-            await inter.response.send_message(embed = Embed(title = "인증 성공!" , description = "인증에 성공하셨어요!" , color = 0x00b9ff) , ephemeral = True)
+            await inter.followup.send(embed = Embed(title = "인증 성공!" , description = "인증에 성공하셨어요!" , color = 0x00b9ff) , ephemeral = True)
         else:
-            await inter.response.send_message(embed = Embed(title = "인증 실패!" , description = "인증에 실패하셨어요... 혹시 로봇은 아니죠...?" , color = 0xff8d00) , ephemeral = True)
+            await inter.followup.send(embed = Embed(title = "인증 실패!" , description = "인증에 실패하셨어요... 혹시 로봇은 아니죠...?" , color = 0xff8d00) , ephemeral = True)
 
 class verifyMake(ui.Modal):
     def __init__(self , inter : Interaction):
@@ -121,13 +123,14 @@ class verifyMake(ui.Modal):
         self.add_item(self.Length)
 
     async def callback(self, inter : Interaction):
+        await inter.response.defer()
         try:a = int(self.Length.value)
-        except:return await inter.response.send_message(embed = Embed(title = "오류" , description = "인증코드의 길이가 숫자가 아닙니다" , color = 0xff0000) , ephemeral = True)
+        except:return await inter.followup.send(embed = Embed(title = "오류" , description = "인증코드의 길이가 숫자가 아닙니다" , color = 0xff0000) , ephemeral = True)
         
-        if a < 1:return await inter.response.send_message(embed = Embed(title = "오류" , description = "인증코드의 최소길이는 1입니다" , color = 0xff0000) , ephemeral = True)
+        if a < 1:return await inter.followup.send(embed = Embed(title = "오류" , description = "인증코드의 최소길이는 1입니다" , color = 0xff0000) , ephemeral = True)
 
 
-        await inter.response.send_message("만들기 성공!" , ephemeral = True)
+        await inter.followup.send("만들기 성공!" , ephemeral = True)
         await inter.channel.send(embed = Embed(title = self.EmbedTitle.value , description = self.EmbedDescription.value.replace("{role}" , f"<@&{self.Role.values[0]}>")) , view = button(name = self.ButtonName.value , role = self.Role.values[0] , length = self.Length.value))
 
 class verifySelect(ui.Select):
@@ -170,7 +173,8 @@ class inquiry(ui.View):
     def __init__(self):
         super().__init__(timeout=600)
     @ui.button(label="네" , style=ButtonStyle.green , emoji=emojis.check())
-    async def yes(self , button : Button , inter : Integration):
+    async def yes(self , button : Button , inter : Interaction):
+        await inter.response.defer()
         embed = Embed(title = "문의가 도착하였습니다." , description=f"{inter.message.embeds[0].description.replace('내용 : ' , '')} \n\nid : {inter.user.id}\nname:{inter.user}" , color = random_color())
         try:
             if "http" in str(inter.message.embeds[0].url):
@@ -186,6 +190,7 @@ class inquiry(ui.View):
     async def no(self , button : Button , inter : Integration):
         await inter.message.delete()
         del self
+
 
 
         
