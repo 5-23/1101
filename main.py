@@ -51,18 +51,18 @@ async def 인증만들기(inter : Interaction):
 @client.event
 async def on_interaction(inter : Interaction):
     if inter.type == InteractionType.application_command:
-        # try:
-        if str(inter.channel.type) == "private":return await inter.response.send_message(embed = Embed(title = "오류" , description = "DM에서는 사용하실수 없어요!" , color = 0xff0000) , ephemeral = True)
+        try:
+            if str(inter.channel.type) == "private":return await inter.response.send_message(embed = Embed(title = "오류" , description = "DM에서는 사용하실수 없어요!" , color = 0xff0000) , ephemeral = True)
 
-        if inter.user.guild_permissions.administrator:return await inter.response.send_modal(verifyMake(inter = inter))
-        if utils.get(inter.guild.members , id = client.user.id).guild_permissions.administrator:return await inter.response.send_message(embed = Embed(title = "오류" , description = "봇이 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
-        await inter.response.send_message(embed = Embed(title = "오류" , description = "당신은 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
-        # except:
-        #     pass
+            if inter.user.guild_permissions.administrator:return await inter.response.send_modal(verifyMake(inter = inter))
+            if utils.get(inter.guild.members , id = client.user.id).guild_permissions.administrator:return await inter.response.send_message(embed = Embed(title = "오류" , description = "봇이 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+            await inter.response.send_message(embed = Embed(title = "오류" , description = "당신은 어드민이 아닙니다." , color = 0xff0000) , ephemeral = True)
+        except Exception as e:
+            print(e)
 
     elif inter.type == InteractionType.component:
         try:await inter.response.send_modal(verifyModal(length = int(inter.data["custom_id"].split("|")[1]) , role = int(inter.data["custom_id"].split("|")[0]) , inter = inter))
-        except:pass
+        except Exception as e:print(e)
 
 
 class button(ui.View):
@@ -185,6 +185,8 @@ class inquiry(ui.View):
     async def no(self , button : Button , inter : Integration):
         await inter.message.delete()
         del self
+
+client.run("OTgyOTk1NzY2NTEzNjM5NDY1.GKrMdz.6N5BZ5ymhq7CoPPPbt7A2_niaT_2r1iaXpw16g")
 
 
         
