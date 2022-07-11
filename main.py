@@ -186,6 +186,7 @@ class inquiry(ui.View):
         await inter.message.delete()
         del self
 
+
         
 token = os.environ['TOKEN']
 client.run(token)
