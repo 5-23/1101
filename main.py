@@ -193,4 +193,4 @@ class inquiry(ui.View):
 
         
 token = os.environ['TOKEN']
-client.run(token)
+# client.run(token)
